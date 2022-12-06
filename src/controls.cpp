@@ -1,15 +1,15 @@
 #include "controls.hpp"
 
 Controls::Controls() {
-  this->forward = false;
-  this->reverse = false;
-  this->left = false;
-  this->right = false;
+  forward = false;
+  reverse = false;
+  left = false;
+  right = false;
 }
 
 void Controls::HandleKeyboard() {
-  this->forward = IsKeyDown(KEY_W);
-  this->reverse = IsKeyDown(KEY_S);
-  this->left = IsKeyDown(KEY_A);
-  this->right = IsKeyDown(KEY_D);
+  forward = IsKeyDown(KEY_W);
+  reverse = IsKeyDown(KEY_S);
+  left = IsKeyDown(KEY_A);
+  right = IsKeyDown(KEY_D);
 }

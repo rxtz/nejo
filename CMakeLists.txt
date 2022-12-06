@@ -9,5 +9,10 @@ add_executable(nejo
   src/main.cpp
   src/assets.cpp
   src/car.cpp
-  src/controls.cpp)
+  src/controls.cpp
+  src/road.cpp
+  src/sensor.cpp)
 target_link_libraries(${PROJECT_NAME} raylib)
+
+add_executable(smallpt
+  demo/smallpt.cpp)

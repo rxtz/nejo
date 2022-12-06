@@ -11,7 +11,7 @@
 #define ANGLE 0.0
 #define SPEED 0.0
 #define ACCELERATION 0.2
-#define MAX_SPEED 6.0
+#define MAX_SPEED INFINITY
 #define FRICTION 0.1
 #define SENSITIVITY 0.03
 
@@ -24,16 +24,11 @@ class Car {
   void Update();
 
  public:
-  Car(
-    Texture2D texture,
-    float x,
-    float y,
-    float scale
-  );
+  Car(Texture2D texture, float x, float y, float scale = 1);
 
   Texture2D texture;
 
-  float x, y, scale, angle, speed, width, height;
+  float x, y, scale, width, height, angle, speed;
 
   void Draw(bool debug = false);
 };

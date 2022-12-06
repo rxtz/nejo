@@ -7,15 +7,18 @@ int main() {
 
   static const Texture2D ferra_texture = LoadTexture(ASSETS "ferrari.png");
 
-  Car ferra{ferra_texture, float(WIN_W) / 2, float(WIN_H) / 2, 1};
+  Road calle{float(WIN_W) / 2, float(WIN_W) * 4 / 5};
+
+  Car ferra{ferra_texture, calle.GetLaneCenter(2), float(WIN_H) / 2, 1.25};
 
   while (!WindowShouldClose()) {
     BeginDrawing();
-    ClearBackground(DARKGRAY);
+    ClearBackground(Color{63, 63, 63});
+
+    calle.Draw(DEBUG);
+    ferra.Draw(DEBUG);
+
     ShowInfo();
-
-    ferra.Draw(true);
-
     EndDrawing();
   }
 

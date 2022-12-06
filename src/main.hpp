@@ -3,10 +3,10 @@
 
 #include <raylib.h>
 
-#include "car.hpp"
 #include "assets.hpp"
+#include "road.hpp"
+#include "car.hpp"
 
-#define WIN_W 512
-#define WIN_H 512
+#define DEBUG true
 
 #endif //NEJO_MAIN_HPP

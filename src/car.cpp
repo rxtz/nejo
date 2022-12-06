@@ -1,85 +1,91 @@
 #include "car.hpp"
 
-Car::Car(
-  Texture2D texture,
-  float x,
-  float y,
-  float scale
-) : texture(texture), x(x), y(y), scale(scale) {
-  this->width = scale * float(texture.width);
-  this->height = scale * float(texture.height);
+Car::Car(Texture2D texture, float x, float y, float scale)
+  : texture(texture), x(x), y(y), scale(scale) {
+  width = scale * float(texture.width);
+  height = scale * float(texture.height);
 
-  this->angle = ANGLE;
-  this->speed = SPEED;
+  angle = ANGLE;
+  speed = SPEED;
 }
 
 void Car::Move() {
-  if (this->controls.forward) {
-    this->speed += ACCELERATION;
+  if (IsKeyDown(KEY_SPACE)) {
+    angle = /*speed = */0;
+    x = (IsCursorOnScreen() ? GetMousePosition().x : float(WIN_W) / 2);
+    y = (IsCursorOnScreen() ? GetMousePosition().y : float(WIN_H) / 2);
+    return;
   }
 
-  if (this->controls.reverse) {
-    this->speed -= ACCELERATION;
+  static const float hei = height / 2;
+
+  if (y - hei > WIN_H) {
+    y = -hei;
+  }
+  if (y + hei < 0) {
+    y = WIN_H + hei;
   }
 
-  if (this->speed > MAX_SPEED) {
-    this->speed = MAX_SPEED; // multa
+  static const float max_speed = MAX_SPEED * scale;
+
+  if (controls.forward) {
+    speed += ACCELERATION;
   }
 
-  if (this->speed < -MAX_SPEED / 2) {
-    this->speed = -MAX_SPEED / 2;
+  if (controls.reverse) {
+    speed -= ACCELERATION;
   }
 
-  if (this->speed > 0) {
-    this->speed -= FRICTION;
-  }
-  if (this->speed < 0) {
-    this->speed += FRICTION;
-  }
-  if (std::abs(this->speed) < FRICTION) {
-    this->speed = 0;
+  if (speed > max_speed) {
+    speed = max_speed; // multa
   }
 
-  if (this->speed != 0) {
-    const float TURN = SENSITIVITY * (this->speed > 0 ? 1 : -1);
+  if (speed < -max_speed / 2) {
+    speed = -max_speed / 2;
+  }
 
-    if (this->controls.left) {
-      this->angle += TURN;
+  if (speed > 0) {
+    speed -= FRICTION;
+  }
+  if (speed < 0) {
+    speed += FRICTION;
+  }
+  if (std::abs(speed) < FRICTION) {
+    speed = 0;
+  }
+
+  if (speed != 0) {
+    const float TURN = SENSITIVITY * (speed > 0 ? 1 : -1);
+
+    if (controls.left) {
+      angle += TURN;
     }
-    if (this->controls.right) {
-      this->angle -= TURN;
+    if (controls.right) {
+      angle -= TURN;
     }
   }
 
-  this->x -= std::sin(this->angle) * this->speed;
-  this->y -= std::cos(this->angle) * this->speed;
+  x -= std::sin(angle) * speed;
+  y -= std::cos(angle) * speed;
 }
 
 void Car::Update() {
-  this->controls.HandleKeyboard();
-  this->Move();
+  controls.HandleKeyboard();
+  Move();
 }
 
 void Car::Draw(bool debug) {
-  this->Update();
+  Update();
 
   if (debug) {
     Print(MG, MG * 3, TextFormat(
-      "(%.2f, %.2f)  %.2f", this->x, this->y,
-      this->angle * RAD2DEG
-    ));
+      "(%.2f, %.2f)  %.2f  %.2f", x, y, speed, angle * RAD2DEG
+    ), BLUE);
   }
 
-  Vector2 position{
-    this->x - this->width / 2,
-    this->y - this->height / 2
-  };
+  Vector2 position{x - width / 2, y - height / 2};
 
-  DrawTextureEx(
-    this->texture,
-    position,
-    -angle * RAD2DEG,
-    this->scale,
-    WHITE
-  );
+  const unsigned char z = std::max<int>(0, int(255 - 2 * std::abs(speed)));
+
+  DrawTextureEx(texture, position, -angle * RAD2DEG, scale, Color{255, z, z, 255});
 }
